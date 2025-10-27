@@ -1,0 +1,67 @@
+/* Base Styles */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f4f7f9;
+}
+
+/* Header */
+#header {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000; /* Ensure it's above the map */
+}
+
+#header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.8em;
+}
+
+#header p {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Map Container */
+#map {
+    flex-grow: 1;
+    z-index: 1;
+}
+
+/* Legend Styling */
+#legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    z-index: 1000; /* Above the map */
+    width: 200px;
+}
+
+#legend h2 {
+    margin-top: 0;
+    font-size: 1.1em;
+    color: #007bff;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+#legend div {
+    color: black;
+    padding: 3px 5px;
+    margin-bottom: 2px;
+    border: 1px solid #ccc;
+    font-size: 0.85em;
+    font-weight: bold;
+    text-shadow: 0 0 2px white;
+}
