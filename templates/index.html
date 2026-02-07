@@ -1,40 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Real-time Air Quality Monitor</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin=""/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
     <script>
-        // Pass configuration values from Flask to JavaScript
-        const CONFIG = {
-            centerLat: {{ config.DEFAULT_CENTER_LAT }},
-            centerLon: {{ config.DEFAULT_CENTER_LON }}
-        };
+      // Pass configuration values from Flask to JavaScript
+      const CONFIG = {
+          centerLat: {{ config.DEFAULT_CENTER_LAT }},
+          centerLon: {{ config.DEFAULT_CENTER_LON }}
+      };
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="header">
+      <div class="header-content">
         <h1>🌬️ Real-time Air Quality Monitor Dashboard</h1>
-        <p>Viewing data for major monitoring stations (Simulated/Mock Data).</p>
+        <p>Viewing data for major monitoring stations in Nairobi.</p>
+      </div>
+      <div class="status-indicator">
+        {% if using_real_data %}
+        <span class="badge real">● Real-time Data (WAQI API)</span>
+        {% else %}
+        <span class="badge mock">● Simulated Data (Demo Mode)</span>
+        {% endif %}
+      </div>
     </div>
     <div id="map"></div>
     <div id="legend">
-        <h2>AQI Legend</h2>
-        <div style="background-color: #00e400;">0-50 (Good)</div>
-        <div style="background-color: #ffff00;">51-100 (Moderate)</div>
-        <div style="background-color: #ff7e00;">101-150 (Sensitive Groups)</div>
-        <div style="background-color: #ff0000;">151-200 (Unhealthy)</div>
-        <div style="background-color: #8f3f97;">201-300 (Very Unhealthy)</div>
-        <div style="background-color: #7e0023;">301+ (Hazardous)</div>
+      <h2>AQI Legend</h2>
+      <div style="background-color: #00e400">0-50 (Good)</div>
+      <div style="background-color: #ffff00">51-100 (Moderate)</div>
+      <div style="background-color: #ff7e00">101-150 (Sensitive Groups)</div>
+      <div style="background-color: #ff0000">151-200 (Unhealthy)</div>
+      <div style="background-color: #8f3f97">201-300 (Very Unhealthy)</div>
+      <div style="background-color: #7e0023">301+ (Hazardous)</div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-2P3zU8oO1M0T5v75r9g1s6p110g4uF9qX4p4s5P8F4w="
-        crossorigin=""></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
-</body>
+  </body>
 </html>

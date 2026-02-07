@@ -1,61 +1,31 @@
-import time
-import random
 from flask import Flask, render_template, jsonify
-# import requests #  Kindly Uncomment this for real API calls
 from config import Config
+from services.air_quality_service import AirQualityService, interpret_aqi
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-def get_air_quality_data_mock():
-    """
-    Mocks fetching real-time air quality data from an external API.
-    In a real application, you would use 'requests' to hit an endpoint.
-    """
-    # Example coordinates around the default center (Nairobi, Kenya)
-    MOCK_STATIONS = [
-    {'name': 'City Centre Station', 'lat': -1.285, 'lon': 36.820, 'aqi': 55},
-    {'name': 'Eastlands Monitoring', 'lat': -1.300, 'lon': 36.880, 'aqi': 120},
-    {'name': 'Langata Road Sensor', 'lat': -1.350, 'lon': 36.780, 'aqi': 25},
-    {'name': 'Westlands Area', 'lat': -1.265, 'lon': 36.790, 'aqi': 210},
-    {'name': 'North Suburb Monitoring (Gigiri)', 'lat': -1.210, 'lon': 36.835, 'aqi': 85},
-]
-    # Simulate real-time updates by adding some randomness to AQI
-    for station in MOCK_STATIONS:
-        station['aqi'] = max(0, station['aqi'] + random.randint(-15, 15))
-        station['aqi'] = min(500, station['aqi']) # Cap at max AQI
-        
-    # Simulate API latency
-    time.sleep(0.5) 
-    
-    return MOCK_STATIONS
-
-def interpret_aqi(aqi):
-    """Returns the corresponding color and health text based on US EPA AQI standard."""
-    if aqi <= 50:
-        return {'color': '#00e400', 'level': 'Good'}
-    elif aqi <= 100:
-        return {'color': '#ffff00', 'level': 'Moderate'}
-    elif aqi <= 150:
-        return {'color': '#ff7e00', 'level': 'Unhealthy for Sensitive Groups'}
-    elif aqi <= 200:
-        return {'color': '#ff0000', 'level': 'Unhealthy'}
-    elif aqi <= 300:
-        return {'color': '#8f3f97', 'level': 'Very Unhealthy'}
-    else: # > 300
-        return {'color': '#7e0023', 'level': 'Hazardous'}
+# Initialize the service with the API key from config
+aq_service = AirQualityService(api_key=app.config['AIR_QUALITY_API_KEY'])
 
 @app.route('/')
 def index():
     """Renders the main dashboard page."""
-    return render_template('index.html', config=app.config)
+    # Pass a flag to the template indicating if we are using real data
+    using_real_data = bool(app.config['AIR_QUALITY_API_KEY'])
+    return render_template('index.html', config=app.config, using_real_data=using_real_data)
 
 @app.route('/api/air_quality', methods=['GET'])
 def air_quality_data():
     """API endpoint to serve air quality data to the frontend."""
     try:
-        # Get data (using mock function for this example)
-        station_data = get_air_quality_data_mock()
+        # Get data using the service
+        # We pass the default center coordinates, though our service currently 
+        # has a hardcoded list of stations around that center.
+        station_data = aq_service.get_air_quality_data(
+            app.config['DEFAULT_CENTER_LAT'], 
+            app.config['DEFAULT_CENTER_LON']
+        )
         
         # Format data for frontend, adding color and level info
         processed_data = []
@@ -77,4 +47,4 @@ def air_quality_data():
         return jsonify({'success': False, 'message': 'Failed to fetch external data.'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

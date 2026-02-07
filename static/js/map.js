@@ -76,6 +76,15 @@ function updateMapMarkers(stations) {
         
         // Add marker to the layer group
         aqiMarkers.addLayer(marker);
+
+        // Add a circle for the radius
+        const circle = L.circle([station.lat, station.lon], {
+            color: station.color,
+            fillColor: station.color,
+            fillOpacity: 0.2,
+            radius: 1000 // 500 meters
+        });
+        aqiMarkers.addLayer(circle);
     });
 
     console.log(`Map updated with ${stations.length} AQI stations.`);
